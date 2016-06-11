@@ -1,11 +1,19 @@
-<div id="login">
+<div id="login" >
   <div id="login-left" class="animated"></div>
   <div id="login-right" class="animated"></div>
 </div>
 
-<div id="login-logo" class="animated">
-{% include("../img/logo-color.svg") %}
-{% include("../img/logo-name.svg") %}
+<div id="login-logo" class="animated"  style="position: absolute; left: 100px; top:100px" >
+ <table class="nostyle" style="background: rgba(255,255,255,0); border: none; border-top: none; border-bottom: none;"  border="0" >
+  <tr >
+    <td style=" border: none; border-top: none; border-bottom: none;">{% include("../img/logo-color.svg") %}</td>
+    <td style=" border: none; border-top: none; border-bottom: none;"><center>{% include("../img/logo6.svg") %}</center></td>
+  </tr>
+  <tr>
+    <td style=" border: none; border-top: none; border-bottom: none;">{% include("../img/logo-name.svg") %}</td>
+    <td style=" border: none; border-top: none; border-bottom: none;">{% include("../img/logo-name2.svg") %}</td>
+  </tr>
+</table> 
 </div>
 
 <!--
@@ -20,7 +28,7 @@ Decrypting Index, Messages, and Contacts
   </div>
 </div>
 
-<div id="login-details" class="animated">
+<div id="login-details" class="animated" style="position: absolute; bottom: 100px;right:0px;">
   <div class="form-text">{{_("To Log In Please Enter")}}</div>
   <form method="POST"
         {# Avoid adding the action if it is not needed, as it strips off

@@ -76,7 +76,7 @@ CONFIG_RULES = {
     }),
     'prefs': p(_("User preferences"), False, {
         'num_results':     (_('Search results per page'), int,             20),
-        'rescan_interval': (_('Misc. data refresh frequency'), int,       900),
+        'rescan_interval': (_('Misc. data refresh frequency'), int,       10),
         'open_in_browser':p(_('Open in browser on startup'), bool,       True),
         'web_content':     (_('Download content from the web'),
                             ["off", "anon", "on"],                  "unknown"),
@@ -162,7 +162,7 @@ CONFIG_RULES = {
                             ''),
         'pre_command':     (_('Shell command run before syncing'), str, ''),
         'post_command':    (_('Shell command run after syncing'), str, ''),
-        'interval':        (_('How frequently to check for mail'), int, 300),
+        'interval':        (_('How frequently to check for mail'), int, 10),
         'username':        (_('User name'), str, ''),
         'password':        (_('Password'), str, ''),
         'auth_type':       (_('Authentication scheme'), str, 'password'),

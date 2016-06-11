@@ -1060,10 +1060,12 @@ class MailpileVCard(SimpleVCard):
 
         if source is None:
             if not create:
-                return None
+                print "PROLEMNONE1"        
+	        return None
             new_src_id = create if (create is not True) else randomish_uid()
             if new_src_id not in self.config.sources:
-                self.config.sources[new_src_id] = {}
+        	print "CONFIG NEW SOURCE"
+	        self.config.sources[new_src_id] = {}
             source = self.config.sources[new_src_id]
             source.name = name or ''
             source.protocol = protocol
@@ -1073,7 +1075,7 @@ class MailpileVCard(SimpleVCard):
 
             # This starts the source thread as as side-effect
             self.config.save()
-
+	print "OKSOURCE"
         return source
 
     def sources(self):

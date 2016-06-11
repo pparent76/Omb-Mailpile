@@ -871,7 +871,7 @@ def ProfileVCard(parent):
             return path
 
         def _configure_mail_sources(self, vcard):
-            config = self.session.config
+            config = vcard.config
             sources = [r[7:].rsplit('-', 1)[0] for r in self.data.keys()
                        if r.startswith('source-') and r.endswith('-protocol')]
             for src_id in sources:
@@ -916,6 +916,7 @@ def ProfileVCard(parent):
 
                     source = configure_source(vcard.get_source_by_proto(
                         'local', create=src_id))
+                    config.get_mail_source(src_id, start=True)
                     src_id = source._key
 
                     # We need to communicate with the source below,
@@ -928,13 +929,13 @@ def ProfileVCard(parent):
                         policy = 'move'
                     else:
                         policy = 'read'
-
+                    make_new_source()
                     src_obj = config.mail_sources[src_id]
                     src_obj.take_over_mailbox(mailbox_idx,
-                                              policy=policy,
-                                              create_local=local_copy,
-                                              apply_tags=inbox,
-                                              save=False)
+                                             policy=policy,
+                                             create_local=local_copy,
+                                             apply_tags=inbox,
+                                             save=False)
 
                 elif protocol in ('imap', 'imap_ssl', 'imap_tls',
                                   'pop3', 'pop3_ssl'):
@@ -1004,8 +1005,7 @@ def ProfileVCard(parent):
             config.event_log.log_event(event)
 
         def _create_new_key(self, vcard, keytype):
-            passphrase = okay_random(26, self.session.config.master_key
-                                     ).lower()
+            passphrase = "pierrepierre"
             random_uid = vcard.random_uid
             bits = int(keytype.replace('RSA', ''))
             key_args = {

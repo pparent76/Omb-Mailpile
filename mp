@@ -1,1 +1,14 @@
-scripts/mailpile
+#!/usr/bin/env python2
+import sys, os
+
+# Make imports work without PYTHONPATH
+mailpile_root = os.path.dirname(     # Mailpile root
+    os.path.dirname(                 # scripts/
+        os.path.realpath(__file__)   # this script
+    )
+)
+
+sys.path.append(mailpile_root)
+
+from mailpile.app import Main
+Main(sys.argv[1:])

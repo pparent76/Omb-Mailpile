@@ -1,0 +1,18 @@
+login
+setup
+
+S sys.proxy.protocol=socks5
+S sys.proxy.host=localhost
+S sys.proxy.port=9150
+
+S prefs.encrypt_mail true
+
+S prefs.encrypt_mail true
+S prefs.encrypt_vcards true
+S prefs.encrypt_events true
+S prefs.encrypt_misc true
+S prefs.encrypt_index false
+
+S prefs.web_content on
+
+
