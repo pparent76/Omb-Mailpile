@@ -9,6 +9,8 @@ echo $3>/tmp/fn
 echo "Mail!!!!!!!!!!!!!!!!!!!"
 cat /tmp/mail
 
+source mp-virtualenv/bin/activate
+
 sleep 2
 rm -r ~/.local/share/Mailpile/
 ./mp --www=127.0.0.1:33411/Mailpile/
