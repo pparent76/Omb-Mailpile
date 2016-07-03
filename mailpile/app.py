@@ -16,6 +16,7 @@ from mailpile.plugins.core import Help, HelpSplash, Load, Rescan, Quit
 from mailpile.plugins.motd import MessageOfTheDay
 from mailpile.ui import ANSIColors, Session, UserInteraction, Completer
 from mailpile.util import *
+from math import *
 
 _plugins = PluginManager(builtin=__file__)
 
@@ -164,8 +165,13 @@ class WaitCommand(Command):
     def command(self):
         self.session.ui.display_result(HelpSplash(self.session, 'help', []
                                                   ).run(interactive=False))
+	conter = 0
         while not mailpile.util.QUITTING:
             time.sleep(1)
+            conter = conter + 1
+            if fmod(conter,120) == 0.0 :
+	        print "saving conf";
+	        self._background_save(everything=True)
         return self._success(_('Did nothing much for a while'))
 
 

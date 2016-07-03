@@ -277,9 +277,9 @@ class SetupMagic(Command):
                                  'for super awesome spam filtering'))
 
         vcard_importers = session.config.prefs.vcard.importers
-        if not vcard_importers.gravatar:
-            vcard_importers.gravatar.append({'active': True})
-            session.ui.notify(_('Enabling Gravatar image importer'))
+#        if not vcard_importers.gravatar:
+#            vcard_importers.gravatar.append({'active': True})
+#            session.ui.notify(_('Enabling Gravatar image importer'))
         if not vcard_importers.libravatar:
             vcard_importers.libravatar.append({'active': True})
             session.ui.notify(_('Enabling Libravatar image importer'))

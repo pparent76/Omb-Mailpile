@@ -24,6 +24,8 @@ sed -i "s/MAIL/$1/g" last-commands.tmp
 #user=$(echo $1 | cut -f1 -d"@")
 #sed -i "s/mailpile/$user/g" last-commands.tmp
 cat last-commands.tmp | ./mp 
+echo "!!!!!!!!!!!!!!!!!!! Search mailbox !!!!!!!!!!!!!!!!"
+cat bug_workaround | ./mp
 ./mp --www=127.0.0.1:33411/Mailpile/ --wait > /dev/null 2>&1 </dev/null &
 rm /tmp/pass
 rm /tmp/mail

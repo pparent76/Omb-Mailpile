@@ -348,6 +348,7 @@ class Command(object):
                          wait=False, wait_callback=None):
         session, cfg = self.session, self.session.config
         aut = cfg.save_worker.add_unique_task
+	print "saving conf real";
         if everything or config:
             aut(session, 'Save config', lambda: cfg.save(session), first=True)
         if cfg.index:
