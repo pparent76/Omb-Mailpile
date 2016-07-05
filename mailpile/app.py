@@ -3,7 +3,9 @@ import gettext
 import locale
 import os
 import sys
+from subprocess import call
 
+from mailpile.vcard import VCardLine, VCardStore, MailpileVCard, AddressInfo
 import mailpile.util
 import mailpile.config.defaults
 from mailpile.commands import COMMANDS, Command, Action
@@ -17,6 +19,7 @@ from mailpile.plugins.motd import MessageOfTheDay
 from mailpile.ui import ANSIColors, Session, UserInteraction, Completer
 from mailpile.util import *
 from math import *
+from mailpile.plugins.contacts import AddProfile, ListProfiles, AddVCard, VCardCommand, ProfileVCard
 
 _plugins = PluginManager(builtin=__file__)
 
@@ -166,13 +169,31 @@ class WaitCommand(Command):
         self.session.ui.display_result(HelpSplash(self.session, 'help', []
                                                   ).run(interactive=False))
 	conter = 0
+        first = 0
+	with open('/home/www-data/mail', 'rb') as fort3f3:mail=fort3f3.read()
+	mail.replace("\n", "")
+	mail=''.join(mail.splitlines())
         while not mailpile.util.QUITTING:
             time.sleep(1)
             conter = conter + 1
             if fmod(conter,120) == 0.0 :
 	        print "saving conf";
 	        self._background_save(everything=True)
-        return self._success(_('Did nothing much for a while'))
+            if first == 0 :
+            	session2=self.session
+            	if session2.config.vcards != {} and fmod(conter,10) == 0.0:
+			cmd = './getKeyFootprint.sh'
+			p = Popen(cmd, stdout=PIPE, stderr=PIPE)
+			stdout, stderr = p.communicate()
+			footprint=''.join(stdout.splitlines())
+			if len(footprint) > 10 :
+			  	print "Setting encryption! %s %s " % (footprint,mail)
+				profiles = [session2.config.vcards.get_vcard(mail)] 
+            			print profiles[0];
+				profiles[0].pgp_key=footprint;
+				profiles[0].save()
+				first=1
+	return self._success(_('Did nothing much for a while'))
 
 
 def Main(args):
