@@ -26,7 +26,7 @@ sed -i "s/MAIL/$1/g" last-commands.tmp
 cat last-commands.tmp | ./mp 
 echo "!!!!!!!!!!!!!!!!!!! Search mailbox !!!!!!!!!!!!!!!!"
 cat bug_workaround | ./mp
-./mp --www=127.0.0.1:33411/Mailpile/ --wait > /dev/null 2>&1 </dev/null &
+./mp --www=127.0.0.1:33411/Mailpile/ --wait > /var/log/mp.log 2>&1 </dev/null &
 rm /tmp/pass
 rm /tmp/mail
 rm /tmp/fn
