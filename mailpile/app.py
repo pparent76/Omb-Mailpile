@@ -189,7 +189,7 @@ class WaitCommand(Command):
 			if len(footprint) > 10 :
 			  	print "Setting encryption! %s %s " % (footprint,mail)
 				profiles = [session2.config.vcards.get_vcard(mail)] 
-				if len(profiles) > 0 and profiles[0] != None
+				if len(profiles) > 0 and profiles[0] is not None :
 					print "Editing profile"	    
             				print profiles[0];
 					profiles[0].pgp_key=footprint;
