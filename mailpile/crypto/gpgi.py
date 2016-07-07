@@ -20,7 +20,7 @@ from threading import Thread
 from mailpile.i18n import gettext
 from mailpile.i18n import ngettext as _n
 from mailpile.crypto.state import *
-from mailpile.crypto.mime import MimeSigningWrapper, MimeEncryptingWrapper
+from mailpile.crypto.mime import MimeSigningWrapper, MimeEncryptingWrapper, MimeSignEncryptingWrapper
 from mailpile.safe_popen import Popen, PIPE, Safe_Pipe
 
 
@@ -1400,23 +1400,16 @@ class OpenPGPMimeEncryptingWrapper(MimeEncryptingWrapper):
         return GetKeys(self.crypto(), self.config, who)
 
 
-class OpenPGPMimeSignEncryptWrapper(OpenPGPMimeEncryptingWrapper):
+class OpenPGPMimeSignEncryptWrapper(MimeSignEncryptingWrapper):
     CONTAINER_PARAMS = (('protocol', 'application/pgp-encrypted'), )
     ENCRYPTION_TYPE = 'application/pgp-encrypted'
     ENCRYPTION_VERSION = 1
 
     def crypto(self):
-        return GnuPG(self.config)
+        return GnuPG(self.config, event=self.event)
 
-    def _encrypt(self, message_text, tokeys=None, armor=False):
-        from_key = self.get_keys([self.sender])[0]
-        return self.crypto().encrypt(message_text,
-                                     tokeys=tokeys, armor=True,
-                                     sign=True, fromkey=from_key)
-
-    def _update_crypto_status(self, part):
-        part.signature_info.part_status = 'verified'
-        part.encryption_info.part_status = 'decrypted'
+    def get_keys(self, who):
+        return GetKeys(self.crypto(), self.config, who)
 
 
 class GnuPGExpectScript(threading.Thread):

@@ -534,3 +534,69 @@ class MimeEncryptingWrapper(MimeWrapper):
                 return self.container
 
         raise EncryptionFailureError(_('Failed to encrypt message!'), to_keys)
+      
+class MimeSignEncryptingWrapper(MimeWrapper):
+    CONTAINER_TYPE = 'multipart/encrypted'
+    CONTAINER_PARAMS = ()
+    ENCRYPTION_TYPE = 'application/x-encrypted'
+    ENCRYPTION_VERSION = 0
+
+    def __init__(self, *args, **kwargs):
+        MimeWrapper.__init__(self, *args, **kwargs)
+
+        self.version = MIMEBase(*self.ENCRYPTION_TYPE.split('/'))
+        self.version.set_payload('Version: %s\n' % self.ENCRYPTION_VERSION)
+        for h, v in (("Content-Disposition", "attachment"), ):
+            self.version.add_header(h, v)
+
+        self.enc_data = MIMEBase('application', 'octet-stream')
+        for h, v in (("Content-Disposition",
+                      "attachment; filename=\"msg.asc\""), ):
+            self.enc_data.add_header(h, v)
+
+        self.attach(self.version)
+        self.attach(self.enc_data)
+
+    def _encrypt(self, message_text, tokeys=None, armor=False):
+        from_key = self.get_keys([self.sender])[0]
+        return self.crypto().encrypt(message_text,
+                                     tokeys=tokeys, armor=True,
+                                     sign=True, fromkey=from_key)
+
+    def _update_crypto_status(self, part):
+        part.signature_info.part_status = 'verified'
+        part.encryption_info.part_status = 'decrypted'
+
+    def wrap(self, msg, prefer_inline=False):
+        to_keys = set(self.get_keys(self.recipients + [self.sender]))
+        from_key = self.get_keys([self.sender])[0]
+
+        if prefer_inline:
+            prefer_inline = self.get_only_text_part(msg)
+
+        if prefer_inline is not False:
+            message_text = Normalize(prefer_inline.get_payload(None, True))
+            status, enc = self._encrypt(message_text,
+                                        tokeys=to_keys,
+                                        armor=True)
+            if status == 0:
+                _update_text_payload(prefer_inline, enc)
+                self._update_crypto_status(prefer_inline)
+                return msg
+
+        else:
+            MimeWrapper.wrap(self, msg)
+            del msg['MIME-Version']
+            if self.cleaner:
+                self.cleaner(msg)
+            message_text = self.flatten(msg)
+            status, enc = self._encrypt(message_text,
+                                        tokeys=to_keys,
+                                        armor=True)
+            if status == 0:
+                self.enc_data.set_payload(enc)
+                self._update_crypto_status(self.enc_data)
+                return self.container
+	#We raise a signing error rather than encrypting error so that the mailpile interface
+	#Opens dialog to unlock key. (Error most probably comes from a key locked)
+        raise SignatureFailureError(_('Failed to sign message!'), from_key)
